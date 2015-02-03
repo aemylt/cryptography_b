@@ -280,7 +280,7 @@ Y'_{11}...Y'_{l1}\\
 \end{pmatrix}$\\
 \>$\mathcal{A} \leftarrow VK'$\\
 \>$\mathcal{A} \rightarrow (m_1...m_l)$\\
-\>{\bf if} $m^*_{i^*} = b$ {\bf then abort}\\
+\>{\bf if} $m_{i^*} = b$ {\bf then abort}\\
 \>$\mathcal{A} \leftarrow (X_{1m_1}...X_{lm_l})$\\
 \>$\mathcal{A} \rightarrow (m^*_1...m^*_l,\sigma^*_1...\sigma^*_l)$\\
 \>{\bf if} $m^*_{i^*} \neq b$ {\bf then abort}\\
@@ -293,7 +293,7 @@ As long as these three conditions hold:
 \begin{enumerate}
 \item $\mathcal{A}$ successfully breaks $\pi_f$
 \item $m_{i^*} \neq m^*_{i^*}$
-\item and $m^*_{i^*} = b$ \footnote{Note that if conditions 1 and 2 hold, then $m_{i^*} \neq b$ and thus both abort cases are covered.}
+\item and $m^*_{i^*} = b$ \footnote{Note that if conditions 2 and 3 hold, then $m_{i^*} \neq b$ and thus both abort cases are covered.}
 \end{enumerate}
 
 Then $\sigma_{i^*}$ is a preimage of $Y$. So in order for $\mathcal{B}$ to succeed, $\mathcal{A}$ needs to succeed and we need to select suitable values for the tuple $(i^*,b) \in \{1,...,l\} \times \{0,1\}$. There are $2l$ possible values for the tuple and at least one satisfies the above condition.
