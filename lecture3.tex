@@ -149,25 +149,7 @@ Y_{11}...Y_{l1}\\
 
 Because the first bit of the forged message $m^*_1 = 0$, the start of the forged signature $\sigma^*_1$ is a preimage of $Y_{10}$.
 
-From this, we can construct an adversary $\mathcal{B}$ for $f$.
-
-\subsubsection{An Incorrect Adversary for $f$}
-
-\begin{tabbing}
-\hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \=\kill
-\>{\bf input:} $Y = f(x)$\\
-\>$\mathcal{A} \leftarrow Y^{2l} = 
-\begin{pmatrix}
-Y...Y\\
-Y...Y\\
-\end{pmatrix}$\\
-\>$\mathcal{A}$ $\rightarrow (0m^*_2...m^*_l,\sigma^*_1\sigma^*_2...\sigma^*_l)$\\
-\>{\bf output} $\sigma^*_1$
-\end{tabbing}
-
-This adversary is not guaranteed to succeed, as the verification key in the Lamport signature scheme is meant to appear random. It is possible that $Y_{ij} = Y_{i'j'}$ for all tuples $(i,j), (i', j') \in \{1,...,l\} \times \{0,1\}$ and thus that every component of the verification key is identicle, but this is extremely unlikely.
-
-\subsubsection{An Improved Adversary}
+From this, we can construct an adversary $\mathcal{B}$ for $f$:
 
 \begin{tabbing}
 \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \=\kill
