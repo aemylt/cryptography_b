@@ -105,8 +105,6 @@
 % macros follow.  
 %**** IN GENERAL, BE BRIEF. LONG SCRIBE NOTES, NO MATTER HOW WELL WRITTEN,
 %**** ARE NEVER READ BY ANYBODY.
-Last week, we introduced the concept of one way functions (OWFs) and showed how we can create a one-time signature scheme given any OWF. This lecture, we are going to prove the security of the scheme.
-
 \section{Security of the Lamport One-Time Signature Scheme} % Don't be this informal in your notes!
 
 For simplicity, the Lamport one-time signature scheme for a OWF $f$ will be referred to as $\pi_f$.
@@ -116,10 +114,10 @@ For simplicity, the Lamport one-time signature scheme for a OWF $f$ will be refe
 If $f$ is a OWF then $\pi_f$ is a secure one-time signature scheme.
 \end{theorem}
 
-We will show this by a reduction: Given an adversary $\mathcal{A}$ against $\pi_f$, we can construct another adversary $\mathcal{B}$ against $f$. We will do this in three parts.
+We will show this by reduction: Given an adversary $\mathcal{A}$ against $\pi_f$, there exists an adversary $\mathcal{B}$ against $f$. We will prove this in three parts.
 
 \subsection{Security Under Two Assumptions}
-First, we will prove this to be true if the following assumptions hold:
+First, we will assume the following:
 \begin{enumerate}
 \item The adversary $\mathcal{A}$ is passive, so it cannot make any signature queries.
 \item The first bit of the forged message returned by A is 0.
@@ -147,9 +145,7 @@ Y_{11}...Y_{l1}\\
 \end{center}
 \fig{1}{0in}{The first adversary against $\pi_f$}
 
-Because the first bit of the forged message $m^*_1 = 0$, the start of the forged signature $\sigma^*_1$ is a preimage of $Y_{10}$.
-
-From this, we can construct an adversary $\mathcal{B}$ for $f$:
+Because the first bit of the forged message $m^*_1 = 0$, the start of the forged signature $\sigma^*_1$ is a preimage of $Y_{10}$. From this, we can construct an adversary $\mathcal{B}$ for $f$:
 
 \begin{tabbing}
 \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \=\kill
@@ -173,11 +169,9 @@ Y_{11}Y_{21}...Y_{l1}\\
 \>{\bf output} $\sigma^*_1$
 \end{tabbing}
 
-Because $m^*_1 = 0$ by assumption, $\mathcal{B}$ is guaranteed to find a preimage of $Y$ as long as $\mathcal{A}$ can forge a signature.
+Because $m^*_1 = 0$ by assumption, $\sigma^*_1$ is guaranteed to be a preimage of $Y$ as long as $\mathcal{A}$ can forge a signature.
 
 $$\text{Prob}[\mathcal{B}\text{ breaks }f] = \text{Prob}[\mathcal{A}\text{ breaks }\pi_f]$$
-
-If $\text{Prob}[\mathcal{A}\text{ breaks }\pi_f]$ is non-negligible, then $\mathcal{B}$ succeeds with non-negligible probability.
 \end{proof}
 
 \subsection{Removing Assumption 2}
@@ -187,7 +181,7 @@ Given a passive adversary $\mathcal{A}$ against $\pi_f$, there exists an adversa
 \end{lemma}
 
 \begin{proof}
-Because we can no longer assume $m^*_1 = 0$, instead of setting $Y_{10} \leftarrow Y$, we flip a bit to determine the value we set to $Y$.
+Because we can no longer assume $m^*_1 = 0$, instead of setting $Y_{10} \leftarrow Y$, we flip a bit $b$. Note that $\bar{b} = (1 - b) \textbf{ mod } 2$ is the inverse of $b$.
 
 \begin{tabbing}
 \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \=\kill
@@ -215,16 +209,16 @@ Y'_{11}Y_{21}...Y_{l1}\\
 \>{\bf output} $\sigma^*_1$
 \end{tabbing}
 
-If $\mathcal{A}$ has succeeded and $m^*_1 = b$ then $\sigma_1$ is a preimage of $Y$ and $\mathcal{B}$ is therefore successful.
+If $\mathcal{A}$ has succeeded and $m^*_1 = b$ then $\sigma_1^*$ is a preimage of $Y$ and $\mathcal{B}$ is therefore successful.
 
 $$\text{Prob}[\mathcal{B}\text{ breaks }f] = \frac{1}{2}\text{Prob}[\mathcal{A}\text{ breaks }\pi_f]$$
 
-Again, $\mathcal{B}$ breaks $f$ with non-negligible probability as long as $\frac{1}{2}\text{Prob}[\mathcal{A}\text{ breaks }\pi_f]$ is non-negligible.
+If $\text{Prob}[\mathcal{A}\text{ breaks }\pi_f]$ is non-negligible then $\text{Prob}[\mathcal{B}\text{ breaks }f]$ is also non-negligible.
 \end{proof}
 
 \subsection{Removing Assumption 1}
 
-To complete our proof of Theorem~\ref{theorem:main}, we need to allow our adversary $\mathcal{A}$ to make one signature query. Note that if we allow $\mathcal{A}$ to make more than one signature query, $\mathcal{A}$ can just query the messages $0^l$ and $1^l$ to acquire the entire signing key.
+To complete our proof of Theorem~\ref{theorem:main}, we need to allow our adversary $\mathcal{A}$ to make one signature query. Note that if $\mathcal{A}$ can make more than one query, $\mathcal{A}$ can query the messages $0^l$ and $1^l$ to recover the complete key.
 
 \begin{proof}
 Our final adversary $\mathcal{A}$ against $\pi_f$ is this black box:
@@ -239,18 +233,18 @@ Y_{11}...Y_{l1}\\
 \end{pmatrix}$};
 \node (QM) at (3, 0.5) {$(m_1...m_l)$};
 \node (QR) at (3, -0.5) {$(\sigma_1...\sigma_l)$};
-\node (FR) at (3, -1.5) {$(M^*_1m^*_2...m^*_l,\sigma^*_1...\sigma^*_l)$};
+\node (FR) at (3, -1.5) {$(m^*_1m^*_2...m^*_l,\sigma^*_1...\sigma^*_l)$};
 \draw (VK) -- (A.72);
 \draw (A.44) -- (QM);
-\draw (QR) -- (A.315);
-\draw (A.288) -- (FR);
+\draw (QR) -- (A.316);
+\draw (A.289) -- (FR);
 \end{tikzpicture}
 \end{center}
 \fig{2}{0in}{The final adversary against $\pi_f$}
 
-Recall from the definition of EUF-CMA as presented in Lecture 2 that the message forged by the adversary cannot match the message the adversary queried. This means that there exists some index $i^*$ such that $m_{i^*} \neq m^*_{i^*}$ and thus $\sigma_{i^*}$ is a preimage computed by $\mathcal{A}$.
+Recall from the definition of EUF-CMA\footnote{See lecture 2 notes.} that the message forged by the adversary cannot match the message queried. This means that there is an index $i^*$ such that $m_{i^*} \neq m^*_{i^*}$, so $\sigma_{i^*}$ is a preimage computed by $\mathcal{A}$. The only problem is that we do not know which index $i^*$ is.
 
-Therefore, our final adversary $\mathcal{B}$ against $f$ is as follows:
+Our final adversary $\mathcal{B}$ against $f$ is as follows:
 
 \begin{tabbing}
 \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \=\kill
@@ -267,12 +261,9 @@ Y_{11}...Y_{l1}\\
 \>$i^* \xleftarrow{\$} \{1,...,l\} $\\
 \>$b \xleftarrow{\$} \{0,1\}$\\
 \>{\bf for} $i \in \{1,...,l\}$\\
-\>\>{\bf if} $i = i^*$ {\bf then}\\
-\>\>\>$Y'_{i^*b} \leftarrow Y$\\
-\>\>\>$Y'_{i^*\bar{b}} \leftarrow Y'_{i^*\bar{b}}$\\
-\>\>{\bf otherwise}\\
-\>\>\>$Y'_{i0} \leftarrow Y_{i0}$\\
-\>\>\>$Y'_{i1} \leftarrow Y_{i1}$\\
+\>\>$Y'_{i0} \leftarrow Y_{i0}$\\
+\>\>$Y'_{i1} \leftarrow Y_{i1}$\\
+\>$Y'_{i^*b} \leftarrow Y$\\
 \>$VK' \leftarrow
 \begin{pmatrix}
 Y'_{10}...Y'_{l0}\\
@@ -287,7 +278,7 @@ Y'_{11}...Y'_{l1}\\
 \>{\bf output} $\sigma^*_{i^*}$
 \end{tabbing}
 
-When $\mathcal{A}$ makes its oracle query, $\mathcal{B}$ still has access to the signing key and can therefore compute a signature. The only exception is if $m^*_{i^*} = b$; $\mathcal{B}$ is unable to provide a response in this case as $Y_{i^*b} = Y$, so computing a signature would require finding a preimage of $Y$.
+$\mathcal{B}$ still has access to the signing key and can thus answer a signature query. This is true unless $m^*_{i^*} = b$; As $Y_{i^*b} = Y$, a signature in this case would require computing a preimage of $Y$.
 
 As long as these three conditions hold:
 \begin{enumerate}
@@ -296,7 +287,7 @@ As long as these three conditions hold:
 \item and $m^*_{i^*} = b$ \footnote{Note that if conditions 2 and 3 hold, then $m_{i^*} \neq b$ and thus both abort cases are covered.}
 \end{enumerate}
 
-Then $\sigma_{i^*}$ is a preimage of $Y$. So in order for $\mathcal{B}$ to succeed, $\mathcal{A}$ needs to succeed and we need to select suitable values for the tuple $(i^*,b) \in \{1,...,l\} \times \{0,1\}$. There are $2l$ possible values for the tuple and at least one satisfies the above condition.
+Then $\sigma_{i^*}$ is a preimage of $Y$. So in order for $\mathcal{B}$ to succeed, $\mathcal{A}$ needs to succeed and we need to select a suitable index of the verification key to change. There are $2l$ indices and at least one satisfies the conditions.
 
 $$\text{Prob}[\mathcal{B}\text{ breaks }f] \geq \frac{1}{2l}\text{Prob}[\mathcal{A}\text{ breaks }\pi_f]$$
 
