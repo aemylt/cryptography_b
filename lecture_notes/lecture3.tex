@@ -107,14 +107,14 @@
 %**** ARE NEVER READ BY ANYBODY.
 \section{Security of the Lamport One-Time Signature Scheme} % Don't be this informal in your notes!
 
-For simplicity, the Lamport one-time signature scheme for a OWF $f$ will be referred to as $\pi_f$.
+For simplicity, the Lamport one-time signature scheme for a one-way function (OWF) $f$ will be denoted $\pi_f$.
 
 \begin{theorem}
 \label{theorem:main}
 If $f$ is a OWF then $\pi_f$ is a secure one-time signature scheme.
 \end{theorem}
 
-We will show this by reduction: Given an adversary $\mathcal{A}$ against $\pi_f$, there exists an adversary $\mathcal{B}$ against $f$. We will prove this in three parts.
+We will show this by reduction: given an adversary $\mathcal{A}$ against $\pi_f$, there exists an adversary $\mathcal{B}$ against $f$. We will prove this in three parts.
 
 \subsection{Security Under Two Assumptions}
 First, we will assume the following:
@@ -145,11 +145,29 @@ Y_{11}...Y_{l1}\\
 \end{center}
 \fig{1}{0in}{The first adversary against $\pi_f$}
 
-Because the first bit of the forged message $m^*_1 = 0$, the start of the forged signature $\sigma^*_1$ is a preimage of $Y_{10}$. From this, we can construct an adversary $\mathcal{B}$ for $f$:
+Because the first bit of the forged message $m^*_1 = 0$, the start of the forged signature $\sigma^*_1$ is a preimage of $Y_{10}$. From this, we can construct an adversary $\mathcal{B}$ for $f$.
+
+\subsubsection{A Poor First Attempt}
 
 \begin{tabbing}
 \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \=\kill
-\>{\bf input:} $Y = f(x)$\\
+\>{\bf input} $Y = f(x)$\\
+\>$\mathcal{A} \leftarrow
+\begin{pmatrix}
+YYY...Y\\
+YYY...Y\\
+\end{pmatrix}$\\
+\>$\mathcal{A} \rightarrow (0m^*_2...m^*_l,\sigma^*_1\sigma^*_2...\sigma^*_l)$\\
+\>{\bf output} $\sigma^*_1$
+\end{tabbing}
+
+This is not guaranteed to work, as the verification key passed to $\mathcal{A}$ is meant to appear random. While it might be possible for all components of the verification key to match, it is very unlikely.
+
+\subsubsection{An Improved Adversary}
+
+\begin{tabbing}
+\hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \=\kill
+\>{\bf input} $Y = f(x)$\\
 \>$(SK, VK) \leftarrow Kg(n) = \left(
 \begin{pmatrix}
 X_{10}...X_{l0}\\
@@ -159,12 +177,11 @@ X_{11}...X_{l1}\\
 Y_{10}Y_{20}...Y_{l0}\\
 Y_{11}Y_{21}...Y_{l1}\\
 \end{pmatrix}\right)$\\
-\>$VK' \leftarrow
+\>$\mathcal{A} \leftarrow
 \begin{pmatrix}
 YY_{20}...Y_{l0}\\
 Y_{11}Y_{21}...Y_{l1}\\
 \end{pmatrix}$\\
-\>$\mathcal{A} \leftarrow VK'$\\
 \>$\mathcal{A} \rightarrow (0m^*_2...m^*_l,\sigma^*_1\sigma^*_2...\sigma^*_l)$\\
 \>{\bf output} $\sigma^*_1$
 \end{tabbing}
@@ -181,11 +198,11 @@ Given a passive adversary $\mathcal{A}$ against $\pi_f$, there exists an adversa
 \end{lemma}
 
 \begin{proof}
-Because we can no longer assume $m^*_1 = 0$, instead of setting $Y_{10} \leftarrow Y$, we flip a bit $b$. Note that $\bar{b} = (1 - b) \textbf{ mod } 2$ is the inverse of $b$.
+We now know that for $b = m^*_1$, $\sigma^*_1$ is a preimage of $Y_1b$ computed by $\mathcal{A}$. But we don't know what value $b$ is, so we pick one at random. Note that $\bar{b} = (1 - b) \text{ mod } 2$ is the binary inverse of $b$.
 
 \begin{tabbing}
 \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \=\kill
-\>{\bf input:} $Y = f(x)$\\
+\>{\bf input} $Y = f(x)$\\
 \>$(SK, VK) \leftarrow Kg(n) = \left(
 \begin{pmatrix}
 X_{10}...X_{l0}\\
@@ -218,7 +235,7 @@ If $\text{Prob}[\mathcal{A}\text{ breaks }\pi_f]$ is non-negligible then $\text{
 
 \subsection{Removing Assumption 1}
 
-To complete our proof of Theorem~\ref{theorem:main}, we need to allow our adversary $\mathcal{A}$ to make one signature query. Note that if $\mathcal{A}$ can make more than one query, $\mathcal{A}$ can query the messages $0^l$ and $1^l$ to recover the complete key.
+To complete our proof of Theorem~\ref{theorem:main}, we need to allow $\mathcal{A}$ to make one signature query. Note that if $\mathcal{A}$ can make more than one query, $\mathcal{A}$ can query the messages $0^l$ and $1^l$ to recover the complete key, regardless of $f$.
 
 \begin{proof}
 Our final adversary $\mathcal{A}$ against $\pi_f$ is this black box:
@@ -242,13 +259,13 @@ Y_{11}...Y_{l1}\\
 \end{center}
 \fig{2}{0in}{The final adversary against $\pi_f$}
 
-Recall from the definition of EUF-CMA\footnote{See lecture 2 notes.} that the message forged by the adversary cannot match the message queried. This means that there is an index $i^*$ such that $m_{i^*} \neq m^*_{i^*}$, so $\sigma_{i^*}$ is a preimage computed by $\mathcal{A}$. The only problem is that we do not know which index $i^*$ is.
+Recall from the definition of EUF-CMA\footnote{See Lecture 2 notes.} that the message forged by the adversary cannot match the message queried. This means that there is an index $i^*$ such that $m_{i^*} \neq m^*_{i^*}$, so $\sigma_{i^*}$ is a preimage computed by $\mathcal{A}$. The only problem is that we do not know which index $i^*$ is, so we just pick one at random.
 
 Our final adversary $\mathcal{B}$ against $f$ is as follows:
 
 \begin{tabbing}
 \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \=\kill
-\>{\bf input:} $Y = f(x)$\\
+\>{\bf input} $Y = f(x)$\\
 \>$(SK, VK) \leftarrow Kg(n) = \left(
 \begin{pmatrix}
 X_{10}...X_{l0}\\
@@ -278,16 +295,16 @@ Y'_{11}...Y'_{l1}\\
 \>{\bf output} $\sigma^*_{i^*}$
 \end{tabbing}
 
-$\mathcal{B}$ still has access to the signing key and can thus answer a signature query. This is true unless $m^*_{i^*} = b$; As $Y_{i^*b} = Y$, a signature in this case would require computing a preimage of $Y$.
+$\mathcal{B}$ still has access to the signing key and can thus answer a signature query. This is true unless $m^*_{i^*} = b$; as $Y_{i^*b} = Y$, a signature in this case would require $\mathcal{B}$ computing a preimage of $Y$.
 
 As long as these three conditions hold:
 \begin{enumerate}
-\item $\mathcal{A}$ successfully breaks $\pi_f$
-\item $m_{i^*} \neq m^*_{i^*}$
-\item and $m^*_{i^*} = b$ \footnote{Note that if conditions 2 and 3 hold, then $m_{i^*} \neq b$ and thus both abort cases are covered.}
+\item $\mathcal{A}$ breaks $\pi_f$,
+\item $m_{i^*} \neq m^*_{i^*}$,
+\item and $m^*_{i^*} = b$,\footnote{Note that if conditions 2 and 3 hold, then $m_{i^*} \neq b$ and thus both abort cases are avoided.}
 \end{enumerate}
 
-Then $\sigma_{i^*}$ is a preimage of $Y$. So in order for $\mathcal{B}$ to succeed, $\mathcal{A}$ needs to succeed and we need to select a suitable index of the verification key to change. There are $2l$ indices and at least one satisfies the conditions.
+then $\sigma_{i^*}$ is a preimage of $Y$. So in order for $\mathcal{B}$ to succeed, $\mathcal{A}$ needs to succeed and we need to select a suitable part of the verification key to set to $Y$. There are $2l$ locations and at least one satisfies the conditions above.
 
 $$\text{Prob}[\mathcal{B}\text{ breaks }f] \geq \frac{1}{2l}\text{Prob}[\mathcal{A}\text{ breaks }\pi_f]$$
 
