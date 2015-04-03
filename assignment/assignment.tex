@@ -6,10 +6,20 @@
 \rhead{Dominic Moylett - dm1905@my.bristol.ac.uk}
 \cfoot{Page \thepage}
 
+\title{COMSM0007 Assignment:\\A Summary of Public Key Encryption with keyword Search}
+\author{Dominic Moylett - dm1905@my.bristol.ac.uk}
+
 \begin{document}
-    \begin{center}
-        \section*{Cryptography B}
-        \subsection*{Assignment}
-    \end{center}
+    \maketitle
+
+    \section{Introduction}
+
+    Public Key Encryption with keyword Search is a paper by Dan Boneh, Giovanni Di Crescenzo, Rafail Ostrovsky and Giuseppe Persiano published at Eurocrypt 2004. This paper looks at the ability to search for items contained within encrypted data.
+
+    An example use is an email server: Alice can grant the server the ability to check if the email has the keyword 'Urgent'. When the server now receives an email, it checks if it has the keyword 'Urgent': if so the email is routed to Alice's pager, otherwise it is sent to her laptop. Non-interactive public key encryption with keyword search (sometimes abbreviated to 'searchable encryption') schemes mean that the server can check an encrypted email for keywords without learning any more information about the email or other keywords contained within.
+
+    Due to the computational cost of public key encryption in practice, a searchable encryption scheme does not allow a computer to search the entire encrypted message for keywords. Instead, Alice gives the machine is given access to a list of keywords that they are able to search for. When Bob sends an email, he then selects a number of words to be keywords, and sends them using a \textit{Public-Key Encryption with keyword Search} ($\mathsf{PEKS}$) of each keyword. When the server receives the email, it checks if any of the keywords Alice has given it the ability to search for are within the list of keywords sent by Bob.
+
+    \section{Definitions}
 
 \end{document}
