@@ -1,5 +1,8 @@
 \documentclass[a4paper,11pt]{article}
 
+\usepackage{amsthm}
+\newtheorem{definition}{Definition}
+
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
@@ -22,13 +25,39 @@
 
     \section{Definitions}
 
-    A Non-interactive public key encryption with keyword search scheme consist of the following polynomial time randomised algorithms:
+    \begin{definition}
+        A Non-interactive public key encryption with keyword search scheme consist of the following polynomial time randomised algorithms:
+
+        \begin{enumerate}
+            \item $\mathsf{KeyGen}(s)$: Given a security parameter $s$, produce public and private keys $A_{pub}, A_{priv}$ respectively.
+            \item $\mathsf{PEKS}(A_{pub}, W)$: Given a public key $A_{pub}$ and keyword $W$, produce a searchable encryption of $W$.
+            \item $\mathsf{Trapdoor}(A_{priv}, W)$: Given a private key $A_{priv}$ and keyword $W$, produce a trapdoor $T_W$.
+            \item $\mathsf{Test}(A_{pub}, S, T_W)$: Given a public key $A_{pub}$, searchable encryption $S = \mathsf{PEKS}(A_{pub}, W')$ and trapdoor $T_W = \mathsf{Trapdoor}(A_{priv}, W)$, output 'yes' if $W = W'$ and 'no' otherwise.
+        \end{enumerate}
+    \end{definition}
+
+    When Bob sends an email $msg$ with keywords $W_1,...,W_k$ to Alice, he computes the searchable encryptions for each keyword and sends the following:
+
+    $$[E_{A_{pub}}[msg], \mathsf{PEKS}(A_{pub}, W_1),...,\mathsf{PEKS}(A_{pub}, W_k)]$$
+
+    The email is received by Alice's server, which has trapdoors $T_{W'_1},...,T_{W'_l}$ where $T_{W'} = \mathsf{Trapdoor}(A_{priv}, W')$ for $W'$ in keywords $[W'_1,...,W'_l]$. The server then uses $mathsf{Test}$ with the trapdoors it has been given to see if the email contains one of the keywords specified by Alice.
+
+    Accompanying this definition is a security definition, specified as a $\mathsf{PEKS}$ Security game against an active attacker $\mathcal{A}$:
 
     \begin{enumerate}
-        \item $\mathsf{KeyGen}(s)$: 
-        \item $\mathsf{PEKS}(A_{pub}, W)$: 
-        \item $\mathsf{Trapdoor}(A_{priv}, W)$: 
-        \item $\mathsf{Test}(A_{pub}, S, T_W)$: 
+        \item The challenger runs $\mathsf{KeyGen}(s)$ to generate $A_{pub}$ and $A_{priv}$. $A_{pub}$ is given to the attacker.
+        \item The attacker can adaptively ask for the trapdoor $T_W$ of any keyword $W \in \{0,1\}*$ of his choice.
+        \item At some point, the attacker $\mathcal{A}$ sends two keywords $W_0, W_1$. The only restriction is that the attacker must have not previously asked for the trapdoors $T_{W_0}$ or $T_{W_1}$. The challenger picks a random bit $b \in {0,1}$ and gives the attacker $C = \mathsf{PEKS}(A_{pub}, W_b)$. $C$ is the challenge $\mathsf{PEKS}$.
+        \item The attacker can continue to ask for trapdoors $T_W$ for any $W$ as long as $W \neq W_0, W_1$.
+        \item The attacker eventually outputs a response bit $b' \in \{0,1\}$ and wins if $b = b'$.
     \end{enumerate}
+
+    The adversary's advantage for winning the game is defined as:
+
+    $$Adv_{\mathcal{A}}(s) = |Pr[b' = b] - \frac{1}{2}|$$
+
+    \begin{definition}
+        A $\mathsf{PEKS}$ is semantically secure against an adaptive chosen keyword attack if for any polynomial time attacker $\mathcal{A}$ we have that $Adv_{\mathcal{A}}(s)$ is a negligible function.
+    \end{definition}
 
 \end{document}
