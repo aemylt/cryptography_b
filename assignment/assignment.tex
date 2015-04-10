@@ -3,6 +3,13 @@
 \usepackage{amsthm}
 \newtheorem{definition}{Definition}
 
+\usepackage{amstext}
+
+\usepackage[backend=biber]{biblatex}
+\bibliography{assignment.bib}
+
+\usepackage{hyperref}
+
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
@@ -17,7 +24,7 @@
 
     \section{Introduction}
 
-    Public Key Encryption with keyword Search is a paper by Dan Boneh, Giovanni Di Crescenzo, Rafail Ostrovsky and Giuseppe Persiano published at Eurocrypt 2004. This paper looks at the ability to search for items contained within encrypted data.
+    Public Key Encryption with keyword Search\cite{cryptoeprint:2003:195} is a paper by Dan Boneh, Giovanni Di Crescenzo, Rafail Ostrovsky and Giuseppe Persiano published at Eurocrypt 2004. This paper looks at the ability to search for items contained within encrypted data.
 
     An example use is an email server: Alice can grant the server the ability to check if the email has the keyword 'Urgent'. When the server now receives an email, it checks if it has the keyword 'Urgent': if so the email is routed to Alice's pager, otherwise it is sent to her laptop. Non-interactive public key encryption with keyword search (sometimes abbreviated to 'searchable encryption') schemes mean that the server can check an encrypted email for keywords without learning what the keywords themselves are.
 
@@ -72,6 +79,11 @@
 
     The advantage of this second scheme is that it does not rely on random oracles. But it has a cost in that the public and private keys grow linearly in size as the number of the keywords increase. This is improved by re-using source indistinguishable keys, which can still offer security via cover-free families. The construction uses parameters $(d, t, k, q)$ where $k$ is the number of words in the dictionary, $t$ is an upper bound on the number of keyword trapdoors given to the server by Alice and $d$ and $q$ are two integers satisfying $q = \lceil \frac{d}{4t} \rceil$ and $d \leq 16t^2(1 + \frac{\log(k/2)}{\log 3})$ and is based on a lemma by Du and Hwang that there exists a deterministic algorithm that, for any $(d, t, k, q)$ satisfying the above bounds, produces a $q$-uniform $t$-cover-free family. A reduction shows that if the $\mathsf{PKES}$ scheme has an adversary with advantage $\epsilon$, then there exists an algorithm that breaks source indistinguishable public key encryption scheme and aborts with probability $\frac{1}{poly(t, q, d)}$. Running this algorithm repeatedly until it doesn't abort yields an expected polynomial time adversary with advantage $\frac{\epsilon}{q^2}$.
 
-    \section{Context}
+    \section{Importance and Impact}
+    Boneh et al. were not the first people to investigate the topic of searchable encryption\cite{848445}, but they were the first to devise formal definitions for both the functionality and security behind searchable encryption schemes.
+
+    Work inspired by this paper has focused on two general themes. The first theme is improving the ideas proposed in the original paper. One example of this is Abdalla et al.\cite{abdalla:se-revisited}, who looked at the concept of consistency within the schemes, where if $\mathsf{Test}(m, C) = \text{'yes'}$ and $\mathsf{Test}(m', C) = \text{'yes'}$ then $m = m'$. Baek et al.\cite{baek:se-revisited} improved the efficiency of the bilinear maps construction by removing the need for the trapdoors to be sent from Alice to the email server via a secure (encrypted and authenticated) channel. And both papers investigated extending schemes so that keywords and trapdoors are only temporary, and expire after a given time such as the end of the day. The benefit of public key encryption with temporary keyword search ($\mathsf{PETKS}$) schemes is that when a server is given a trapdoor for a keyword, it is not able to learn if previous ciphertexts contain that keyword.
+
+    \printbibliography
 
 \end{document}
