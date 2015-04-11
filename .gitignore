@@ -2,7 +2,6 @@
 *.log
 *.bbl
 *.bcf
-*.bib
 *.blg
 *.out
 *.run.xml
