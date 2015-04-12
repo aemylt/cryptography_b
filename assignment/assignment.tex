@@ -27,7 +27,7 @@
 
     Public Key Encryption with keyword Search\cite{cryptoeprint:2003:195} is a paper by Dan Boneh, Giovanni Di Crescenzo, Rafail Ostrovsky and Giuseppe Persiano published at Eurocrypt 2004. This paper looks at the ability to search for items contained within encrypted data.
 
-    An example use is an email server: Alice can grant the server the ability to check if the email has the keyword 'Urgent'. When the server now receives an email, it checks if it has the keyword 'Urgent': if so the email is routed to Alice's pager, otherwise it is sent to her laptop. Non-interactive public key encryption with keyword search (sometimes abbreviated to 'searchable encryption') schemes mean that the server can check an encrypted email for keywords without learning what the keywords themselves are.
+    An example use is an email server: Alice can grant the server the ability to check if the email has the keyword 'Urgent'. When the server now receives an email, it checks if it has the keyword 'Urgent': if so the email is routed to Alice's pager, otherwise it is sent to her laptop. Non-interactive public key encryption with keyword search (sometimes abbreviated to 'searchable encryption') schemes mean that the server can check an encrypted email for keywords without learning what the keywords themselves are, or any information about the email other than whether or not it contains those keywords.
 
     Due to the computational cost of public key encryption in practice, a searchable encryption scheme does not allow a computer to search the entire encrypted message for keywords. Instead, Alice gives the machine is given access to a list of keywords that they are able to search for. When Bob sends an email, he then selects a number of words to be keywords, and sends them using a \textit{Public-Key Encryption with keyword Search} ($\mathsf{PEKS}$) of each keyword. When the server receives the email, it checks if any of the keywords Alice has given it the ability to search for are within the list of keywords sent by Bob.
 
@@ -92,6 +92,12 @@
     It is worth noting that while Public Key Encryption with keyword Search has had a large impact in the theory world, it has seen little utilisation in practice. In particular, I have been unable to find a single email system which implements a $\mathsf{PEKS}$ scheme, or even a paper with an empirical analysis of such a scheme. A possible reason for this might be because of the practicality of the constructions for this problem; we are unlikely to see data large enough for this to be beneficial sent via email.
 
     But not all is lost; since 2004 when the paper was first published, a new paradigm has appeared. Boneh et al.'s work has given rise to investigations around the topic of keyword searches on encrypted data which is stored on a remote server\cite{chang:remote}. In particular, keyword searches on data stored in the cloud is a growing trend, with research expaning to problems such as approximate keyword searching\cite{5462196} and searching files for multiple keywords\cite{6674958}. This area has seen more experimental analysis, due to the ability to search larger amounts of data than you would through on a typical email.
+
+    \section{Conclusion}
+
+    With over 1100 citations on Google Scholar, Public Key Encryption with keyword Search has had a large impact on the theory of cryptography. While it was not the first paper to investigate to topic of searchable encryption, it provided a framework for searchable encryption schemes, along with a means of defining security. This paper - along with its symmetric predecessor, Practical techniques for searches on encrypted data - has led to a large body of research in granting permission to make certain computations on encrypted data.
+
+    Although the original proposed application of an email server has seen little support, subsequent schemes have seen benefits in practice on other problems. Most notably, the recent growth of cloud computing has given rise to papers investigating computation on encrypted data that is stored remotely. As more and more companies switch to the cloud for their computation needs, we are likely to see even more research in this area.
 
     \printbibliography
 
