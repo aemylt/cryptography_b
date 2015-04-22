@@ -27,9 +27,9 @@
 
     Public Key Encryption with keyword Search\cite{cryptoeprint:2003:195} is a paper by Dan Boneh, Giovanni Di Crescenzo, Rafail Ostrovsky and Giuseppe Persiano published at Eurocrypt 2004. This paper looks at the ability to search for items contained within encrypted data.
 
-    An example use is an email server: Alice can grant the server the ability to check if the email has the keyword 'Urgent'. When the server now receives an email, it checks if it has the keyword 'Urgent': if so the email is routed to Alice's pager, otherwise it is sent to her laptop. Non-interactive public key encryption with keyword search (sometimes abbreviated to 'searchable encryption') schemes mean that the server can check an encrypted email for keywords without learning what the keywords themselves are, or any information about the email other than whether or not it contains those keywords.
+    An example use is an email server: Alice can grant the server the ability to check if the email has the keyword 'Urgent'. When the server now receives an email, it checks if it has the keyword 'Urgent': if so the email is routed to Alice's pager, otherwise it is sent to her laptop. Non-interactive public key encryption with keyword search (abbreviated to 'searchable encryption' or $\mathsf{PEKS}$) schemes mean that the server can check an encrypted email for keywords without learning what the keywords themselves are, or any information about the email other than whether or not it contains those keywords.
 
-    Due to the computational cost of public key encryption in practice, a searchable encryption scheme does not allow a computer to search the entire encrypted message for keywords. Instead, Alice gives the machine is given access to a list of keywords that they are able to search for. When Bob sends an email, he then selects a number of words to be keywords, and sends them using a \textit{Public-Key Encryption with keyword Search} ($\mathsf{PEKS}$) of each keyword. When the server receives the email, it checks if any of the keywords Alice has given it the ability to search for are within the list of keywords sent by Bob.
+    Due to the computational cost of public key encryption in practice, a searchable encryption scheme does not allow a computer to search the entire encrypted message for keywords. Instead, Alice gives the machine access to a list of keywords which can be searched for. When Bob sends an email, he selects a number of keywords and sends them using a \textit{Public-Key Encryption with keyword Search} ($\mathsf{PEKS}$) of each keyword. When the server receives the email, it checks if any of the keywords in its collection are in the list of keywords sent by Bob.
 
     \section{Definitions}
 
@@ -48,17 +48,17 @@
 
     $$[E_{A_{pub}}[msg], \mathsf{PEKS}(A_{pub}, W_1),...,\mathsf{PEKS}(A_{pub}, W_k)]$$
 
-    The email is received by Alice's server, which has trapdoors $T_{W'_1},...,T_{W'_l}$ where $T_{W'} = \mathsf{Trapdoor}(A_{priv}, W')$ for $W'$ in keywords $[W'_1,...,W'_l]$. The server then uses $mathsf{Test}$ with the trapdoors it has been given to see if the email contains one of the keywords specified by Alice.
+    The email is received by Alice's server, which has trapdoors $T_{W'_1},...,T_{W'_l}$ where $T_{W'} = \mathsf{Trapdoor}(A_{priv}, W')$ for $W'$ in keywords $[W'_1,...,W'_l]$. The server then uses $mathsf{Test}$ to see if the email contains one of the keywords specified by Alice.
 
-    Accompanying this definition is a security definition, specified as a $\mathsf{PEKS}$ Security game against an active attacker $\mathcal{A}$. The game is defined similarly to IND-CCA:
+    Accompanying this definition is a security definition, specified as a $\mathsf{PEKS}$ Security game against an active attacker $\mathcal{A}$. The game is defined similarly to IND-CCA, where the goal is for an adversary to distinguish between one of two keywords without the trapdoors of either keyword:
 
     \begin{enumerate}
         \item The challenger runs $\mathsf{KeyGen}(s)$ to generate $A_{pub}$ and $A_{priv}$. $A_{pub}$ is given to the attacker.
-        \item The attacker can adaptively ask for the trapdoor $T_W$ of any keyword $W \in \{0,1\}*$ of his choice.
-        \item At some point, the attacker $\mathcal{A}$ sends two keywords $W_0, W_1$. The only restriction is that the attacker must have not previously asked for the trapdoors $T_{W_0}$ or $T_{W_1}$. The challenger picks a random bit $b \in {0,1}$ and gives the attacker $C = \mathsf{PEKS}(A_{pub}, W_b)$. $C$ is the challenge $\mathsf{PEKS}$.
-        \item The attacker can continue to ask for trapdoors $T_W$ for any $W$ as long as $W \neq W_0, W_1$.
+        \item The attacker $\mathcal{A}$ sends two keywords $W_0, W_1$ to the challenger. The challenger picks a random bit $b \in {0,1}$ and returns $C = \mathsf{PEKS}(A_{pub}, W_b)$.
         \item The attacker eventually outputs a response bit $b' \in \{0,1\}$ and wins if $b = b'$.
     \end{enumerate}
+
+    Throughout the whole game, the adversary has access to a $\mathsf{Trapdoor}$ oracle $\mathcal{O}_{\mathsf{Trapdoor}}$. $\mathcal{A}$ is allowed to adaptively send words $W$ to $\mathcal{O}_{\mathsf{Trapdoor}}$ at any point in the game and the oracle will return $T_W = \mathsf{Trapdoor}(A_{priv}, W)$. The only caveat is that $W \notin \{W_0, W_1\}$, otherwise $\mathcal{A}$ could simply request the trapdoor $T_{W_0}$ and return 0 if $\mathsf{Test}(A_{pub}, C, T_{W_0})$ returns true and 1 otherwise.
 
     The adversary's advantage for winning the game is defined as:
 
