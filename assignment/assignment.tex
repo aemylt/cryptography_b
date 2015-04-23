@@ -14,11 +14,11 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{Dominic Moylett -- dm1905@my.bristol.ac.uk}
+\rhead{Dominic Moylett--dm1905@my.bristol.ac.uk}
 \cfoot{Page \thepage}
 
 \title{COMSM0007 Assignment:\\A Summary of Public Key Encryption with keyword Search}
-\author{Dominic Moylett -- dm1905@my.bristol.ac.uk}
+\author{Dominic Moylett--dm1905@my.bristol.ac.uk}
 
 \begin{document}
     \maketitle
@@ -27,7 +27,7 @@
 
     Public Key Encryption with keyword Search\cite{cryptoeprint:2003:195} is a paper by Dan Boneh, Giovanni Di Crescenzo, Rafail Ostrovsky and Giuseppe Persiano published at Eurocrypt 2004. This paper looks at the ability to search for items contained within encrypted data.
 
-    An example use is an email server: Alice can grant the server the ability to check if the email has the keyword 'Urgent'. When the server now receives an email, it checks if it has the keyword 'Urgent': if so the email is routed to Alice's pager, otherwise it is sent to her laptop. Non-interactive public key encryption with keyword search (abbreviated to 'searchable encryption' or $\mathsf{PEKS}$) schemes mean that the server can check an encrypted email for keywords without learning what the keywords themselves are, or any information about the email other than whether or not it contains those keywords.
+    An example use is an email server: Alice can grant the server the ability to check if an email has the keyword `Urgent'. When the server receives an email, it checks if it has the keyword: if so the email is routed to Alice's pager, otherwise it is sent to her laptop. Non-interactive public key encryption with keyword search (or `searchable encryption') schemes mean that the server can check a ciphertext for keywords without learning what the other keywords are, or any information about the plaintext besides whether or not it contains those keywords.
 
     Due to the computational cost of public key encryption in practice, a searchable encryption scheme does not allow a computer to search the entire encrypted message for keywords. Instead, Alice gives the machine access to a list of keywords which can be searched for. When Bob sends an email, he selects a number of keywords and sends them using a \textit{Public-Key Encryption with keyword Search} ($\mathsf{PEKS}$) of each keyword. When the server receives the email, it checks if any of the keywords in its collection are in the list of keywords sent by Bob.
 
@@ -37,10 +37,10 @@
         A Non-interactive public key encryption with keyword search scheme consists of the following polynomial time randomised algorithms:
 
         \begin{enumerate}
-            \item $\mathsf{KeyGen}(s)$: Given a security parameter $s$, produce public and private keys $A_{pub}, A_{priv}$ respectively.
+            \item $\mathsf{KeyGen}(s)$: Given a security parameter $s$, produce public and private keys $A_{pub}, A_{priv}$.
             \item $\mathsf{PEKS}(A_{pub}, W)$: Given a public key $A_{pub}$ and keyword $W$, produce a searchable encryption of $W$.
             \item $\mathsf{Trapdoor}(A_{priv}, W)$: Given a private key $A_{priv}$ and keyword $W$, produce a trapdoor $T_W$.
-            \item $\mathsf{Test}(A_{pub}, S, T_W)$: Given a public key $A_{pub}$, searchable encryption $S = \mathsf{PEKS}(A_{pub}, W')$ and trapdoor $T_W = \mathsf{Trapdoor}(A_{priv}, W)$, output 'yes' if $W = W'$ and 'no' otherwise.
+            \item $\mathsf{Test}(A_{pub}, S, T_W)$: Given a public key $A_{pub}$, searchable encryption $S = \mathsf{PEKS}(A_{pub}, W')$ and trapdoor $T_W = \mathsf{Trapdoor}(A_{priv}, W)$, output `yes' if $W = W'$ and `no' otherwise.
         \end{enumerate}
     \end{definition}
 
@@ -48,7 +48,7 @@
 
     $$[E_{A_{pub}}[msg], \mathsf{PEKS}(A_{pub}, W_1),...,\mathsf{PEKS}(A_{pub}, W_k)]$$
 
-    The email is received by Alice's server, which has trapdoors $T_{W'_1},...,T_{W'_l}$ where $T_{W'} = \mathsf{Trapdoor}(A_{priv}, W')$ for $W'$ in keywords $[W'_1,...,W'_l]$. The server then uses $mathsf{Test}$ to see if the email contains one of the keywords specified by Alice.
+    The email is received by Alice's server, which has trapdoors $T_{W'_1},...,T_{W'_l}$ where $T_{W'} = \mathsf{Trapdoor}(A_{priv}, W')$. The server then uses $\mathsf{Test}$ to see if the email contains one of the keywords in its database.
 
     Accompanying this definition is a security definition, specified as a $\mathsf{PEKS}$ Security game against an active attacker $\mathcal{A}$. The game is defined similarly to IND-CCA, where the goal is for an adversary to distinguish between one of two keywords without the trapdoors of either keyword:
 
@@ -68,6 +68,8 @@
         A $\mathsf{PEKS}$ is semantically secure against an adaptive chosen keyword attack if for any polynomial time attacker $\mathcal{A}$ we have that $Adv_{\mathcal{A}}(s)$ is a negligible function.
     \end{definition}
 
+    Note that since the adversary has $A_{pub}$, $\mathcal{A}$ can adaptively call $\mathsf{PKES}$ a polynomial number of times. Thus in order for $\mathcal{A}$ to lose this game, $\mathsf{PKES}$ must be a random function that cannot be exhaustively searched in polynomial time.
+
     \section{Constructions}
 
     The remainder of the paper gives two constructions of public key searchable encryption schemes.
@@ -83,11 +85,11 @@
 
     The scheme is proven semantically secure against an adaptive chosen keyword attack in the random oracle model. This is proven via a reduction to the Bilinear Diffie-Hellman Problem: if an adversary $\mathcal{A}$ can break the scheme in polynomial time with non-negligible advantage $\epsilon$, an adversary $\mathcal{B}$ can be constructed which, given $g, g^a, g^b, g^c \in G_1$ as input, can compute $e(g, g)^{abc} \in G_2$ with advantage $\frac{\epsilon}{eq_Tq_{H_2}}$, where $q_T$ and $q_{H_2}$ are the number of calls to $\mathsf{Trapdoor}$ and $H_2$ respectively.
 
-    The second construction is based on any trapdoor permutation. A result from Bellare et al.\cite{bellare:source} states that given a trapdoor permutation, we can construct a source indistinguishable public key encryption scheme. A public key encryption scheme is source indistinguishable if, given a ciphertext, it is computationally difficult to determine the public key that encrypted it. The scheme works by $A_{pub}$ being a set of public keys - one for each keyword - and $A_{priv}$ being their corresponding private keys. The security of this scheme is shown by a reduction: If the keywords can be distinguished, the underlying encryption scheme is not source indistinguishable.
+    The second construction is based on any trapdoor permutation. A result from Bellare et al.\cite{bellare:source} states that given a trapdoor permutation, we can construct a source indistinguishable public key encryption scheme. A public key encryption scheme is source indistinguishable if, given a ciphertext, it is computationally difficult to determine the public key that encrypted it. The scheme works by $A_{pub}$ being a set of public keys--one for each keyword--and $A_{priv}$ being their corresponding private keys. The security of this scheme is shown by a reduction: If the keywords can be distinguished, the underlying encryption scheme is not source indistinguishable.
 
-    The advantage of this second scheme is that it does not rely on random oracles. But it has a cost in that the public and private keys grow linearly in size as the number of the keywords increase. This is improved by re-using source indistinguishable keys, which can still offer security via cover-free families. As long as Alice only creates $t$ trapdoors for the server, a cover-free family can be created.
+    The advantage of this second scheme is that its proof of security does not rely on random oracles. But it has a cost in that the public and private keys grow linearly in size as the number of the keywords increase. Instead of using a single source indistinguishable public key for each keyword, we use a set of keys. These keys are combined to form a cover-free family, which allows us to re-use the keys. As long as Alice only creates $t$ trapdoors for the server, a cover-free family can be created for each keyword using $q$ keys, where $q$ is a parameter defined by\cite{du:cover-free-families}.
 
-    A reduction shows that if the $\mathsf{PKES}$ scheme has an adversary with advantage $\epsilon$, then there exists an algorithm that breaks source indistinguishable public key encryption scheme and aborts with probability $\frac{1}{poly(t, q, d)}$. Running this algorithm repeatedly until it doesn't abort yields an expected polynomial time adversary with advantage $\frac{\epsilon}{q^2}$. This reduces the key size, but the scheme is now limited as Alice can only create $t$ trapdoors.
+    A reduction shows that if the $\mathsf{PKES}$ scheme has an adversary with advantage $\epsilon$, then there exists an algorithm that breaks source indistinguishable public key encryption scheme and aborts with probability $\frac{1}{poly(t, q, d)}$, where $q$ and $d$ are parameters from\cite{du:cover-free-families}. Running this algorithm repeatedly until it doesn't abort yields an expected polynomial time adversary with advantage $\frac{\epsilon}{q^2}$. This reduces the key size, but the scheme is now limited as Alice can only create $t$ trapdoors.
 
     \section{Importance and Impact}
     Boneh et al. were not the first people to investigate the topic of searchable encryption, which was instead done by Song, Wagner and Perrig\cite{848445}. But Song, Wagner and Perrig's research looked into private key searchable encryption, as opposed to public key. Boneh et al. were also the first to provide definitions of syntax and security for searchable encryption, whereas Song, Wagner and Perrig instead argued that their scheme was secure by proving it was computationally indistinguishable from random text.
@@ -104,7 +106,7 @@
 
     \section{Conclusion}
 
-    With over 1100 citations on Google Scholar, Public Key Encryption with keyword Search has had a large impact on the theory of cryptography. While it was not the first paper to investigate to topic of searchable encryption, it provided a framework for searchable encryption schemes, along with a means of defining security. This paper -- along with its symmetric predecessor -- has led to a large body of research in granting permission to make certain computations on encrypted data.
+    With over 1100 citations on Google Scholar, Public Key Encryption with keyword Search has had a large impact on the theory of cryptography. While it was not the first paper to investigate to topic of searchable encryption, it provided a framework for searchable encryption schemes, along with a means of defining security. This paper--along with its symmetric predecessor--has led to a large body of research in granting permission to make certain computations on encrypted data.
 
     Although the original proposed application of an email server has seen little support, subsequent schemes have seen benefits in practice on other problems. Most notably, the growth of cloud computing has given rise to papers investigating computation on encrypted data that is stored remotely. As more and more companies switch to the cloud for their computation needs, we are likely to see even more research in this area.
 
